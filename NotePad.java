@@ -24,17 +24,14 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultEditorKit;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.Color;
 import javax.swing.JSeparator;
 
 public class NotePad {
 
 	private JFrame frmHe;
+	private FileFilter filter;
 
 	/**
 	 * Launch the application.
@@ -68,7 +65,7 @@ public class NotePad {
 		frmHe.setFont(new Font("Noto Sans", Font.PLAIN, 12));
 		frmHe.setBounds(100, 100, 450, 300);
 		frmHe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		filter = new FileNameExtensionFilter("Text file","txt");
 		final JEditorPane textTalbai = new JEditorPane();
 		textTalbai.setFont(new Font("Noto Sans", Font.PLAIN, 12));
 		JScrollPane scroll = new JScrollPane (textTalbai, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -90,6 +87,7 @@ public class NotePad {
 				System.out.println("Хадгалах дарлаа");
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setDialogTitle("Хадгалах");
+				fileChooser.setFileFilter(filter);
 				int userSelection = fileChooser.showSaveDialog(frmHe);
 				if (userSelection == JFileChooser.APPROVE_OPTION) {
 				    String content = textTalbai.getText();
@@ -129,7 +127,6 @@ public class NotePad {
 		mntmNeeh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser openNew = new JFileChooser(); //filechooser sang initiate hiine
-				FileFilter filter = new FileNameExtensionFilter("Text file","txt");
 				openNew.setFileFilter(filter);
 				openNew.setDialogTitle("Текст файл нээх");
 				int opNew = openNew.showOpenDialog(frmHe); //Neeh dialog garj irne
@@ -185,7 +182,8 @@ public class NotePad {
 		JMenuItem mntmSelectall = new JMenuItem("Бүгд сонгох");
 		mntmSelectall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				textTalbai.selectAll();
+				textTalbai.requestFocusInWindow();
 			}
 		});
 		mntmSelectall.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK));
