@@ -1,5 +1,6 @@
 package BieDaalt;
 
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -24,7 +25,11 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.html.HTMLEditorKit;
+
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterException;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
 
@@ -32,7 +37,6 @@ public class NotePad {
 
 	private JFrame frmHe;
 	private FileFilter filter;
-
 	/**
 	 * Launch the application.
 	 */
@@ -55,7 +59,7 @@ public class NotePad {
 	public NotePad() {
 		initialize();
 	}
-
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -65,51 +69,55 @@ public class NotePad {
 		frmHe.setFont(new Font("Noto Sans", Font.PLAIN, 12));
 		frmHe.setBounds(100, 100, 450, 300);
 		frmHe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		filter = new FileNameExtensionFilter("Text file","txt");
-		final JEditorPane textTalbai = new JEditorPane();
-		textTalbai.setFont(new Font("Noto Sans", Font.PLAIN, 12));
+		filter = new FileNameExtensionFilter("Text file","txt"); //Файлын төрлийг text болгож тохируулах
+		final JEditorPane textTalbai = new JEditorPane(); //Editorpane -ыг оноож өгнө.
+		textTalbai.setFont(new Font("Noto Sans", Font.PLAIN, 12)); //Editorpane -ын фонтыг солих
+		//scroll том жижиг болгоход дагаад ихсэх багасах
+		textTalbai.setEditorKit(new HTMLEditorKit()); //text format оруулахын тулд 
+		textTalbai.setContentType("text/html"); //text format оруулахын тулд mime төрлийг өөрчлөв
 		JScrollPane scroll = new JScrollPane (textTalbai, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		frmHe.getContentPane().add(scroll);
-		
-		JMenuBar menuBar = new JMenuBar();
+
+		JMenuBar menuBar = new JMenuBar(); //menu байрлах мөр
 		menuBar.setFont(new Font("Noto Sans", Font.BOLD, 12));
-		menuBar.setBackground(SystemColor.menu);
+		menuBar.setBackground(SystemColor.menu); //menu арын өнгийг системийн default өнгө болгосон
 		frmHe.setJMenuBar(menuBar);
 		
-		JMenu mnFile = new JMenu("Файл");
-		mnFile.setFont(new Font("Noto Sans", Font.BOLD, 12));
+		JMenu mnFile = new JMenu("Файл"); //файл menu
+		mnFile.setFont(new Font("Noto Sans", Font.BOLD, 12)); //Font тааруулах
 		menuBar.add(mnFile);
 		
-		JMenuItem hadgalah = new JMenuItem("Хадгалах");
-		hadgalah.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+		JMenuItem hadgalah = new JMenuItem("Хадгалах"); //хадгалах menu
+		hadgalah.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK)); //ctrl+s хослол
 		hadgalah.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Хадгалах дарлаа");
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Хадгалах");
-				fileChooser.setFileFilter(filter);
+				System.out.println("Хадгалах дарлаа"); //хадгалах дарж байгаа эсэхийг тест хийж байна
+				JFileChooser fileChooser = new JFileChooser(); //filechooser хувьсагчид объект заах
+				fileChooser.setDialogTitle("Хадгалах"); //Гарч ирэх хадгалах dialog -ын гарчиг
+				fileChooser.setFileFilter(filter); //Дээр заасан файлын төрлийг файл сонгоход тааруулах
 				int userSelection = fileChooser.showSaveDialog(frmHe);
-				if (userSelection == JFileChooser.APPROVE_OPTION) {
-				    String content = textTalbai.getText();
-				    File fi = fileChooser.getSelectedFile();
+				if (userSelection == JFileChooser.APPROVE_OPTION) { // Filechooser гараад сонголттой эсэхийг шалгах 
+				    String content = textTalbai.getText(); //бичсэн текстийг авч content хувьсагчид оноох
+				    File fi = fileChooser.getSelectedFile(); //Сонгосон файлыг авах
 				    try {
-				    	FileWriter fw = new FileWriter(fi.getPath());
-				    	fw.write(content);
-				    	fw.flush();
-				    	fw.close();
-					} catch (Exception e2) {
-						JOptionPane.showMessageDialog(null, e2.getMessage());
+				    	FileWriter fw = new FileWriter(fi.getPath()); //Filewriter-ыг дуудаж сонгосон файлын замыг заах
+				    	fw.write(content); //editorpane-ын текстийг файлруу бичих
+				    	fw.flush(); //filewriter -ыг цэвэрлэх
+				    	fw.close(); //filewriter -ыг хаах
+					} catch (Exception e2) { //алдаатай эсэхийг шалгах
+						JOptionPane.showMessageDialog(null, e2.getMessage()); //алдаа гарсан үед алдааны мэдэгдэл харуулах
 					}
 				}
-//				String sampletext = textTalbai.getText().toString();
-//				try {
-//					Files.write(Paths.get("./fileName.txt"), sampletext.getBytes());
-//				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
 			}
 		});
+		
+		JMenuItem mntmNeeh_1 = new JMenuItem("Шинэ");
+		mntmNeeh_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		mntmNeeh_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+		mnFile.add(mntmNeeh_1);
 		hadgalah.setFont(new Font("Noto Sans", Font.BOLD, 12));
 		mnFile.add(hadgalah);
 				
@@ -118,7 +126,7 @@ public class NotePad {
 		garah.setFont(new Font("Noto Sans", Font.BOLD, 12));
 		garah.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {		
-				System.exit(0); 
+				System.exit(0); //Гарах меню дарахад цонх гарах
 			}
 		});
 		
@@ -126,41 +134,43 @@ public class NotePad {
 		mntmNeeh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		mntmNeeh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser openNew = new JFileChooser(); //filechooser sang initiate hiine
+				JFileChooser openNew = new JFileChooser(); //filechooser санг дуудаж openNew хувьсагч болгох
 				openNew.setFileFilter(filter);
 				openNew.setDialogTitle("Текст файл нээх");
-				int opNew = openNew.showOpenDialog(frmHe); //Neeh dialog garj irne
+				int opNew = openNew.showOpenDialog(frmHe); //File сонгох dialog гарч ирнэ
 				if (opNew == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = openNew.getSelectedFile();
-					//System.out.println(selectedFile); //File iin path iig zuv olj baina
+					//System.out.println(selectedFile); //File замыг зөв олж байна
 					try {
-						textTalbai.setPage(selectedFile.toURI().toURL());
+						textTalbai.setPage(selectedFile.toURI().toURL()); //Сонгосон файлыг Editorpane-д сэт хийнэ
 					} catch (IOException e3) {
-						// TODO Auto-generated catch block
 						e3.printStackTrace();
 					}
-//					BufferedReader in = null;
-//					try {
-//						in = new BufferedReader(new FileReader(selectedFile));
-//						String line = null;
-//						while ((line=in.readLine()) !=null){
-//							System.out.println(line); //line hevlene
-//							textTalbai.setPage(selectedFile.toURI().toURL());
-//						}
-//					} catch (FileNotFoundException e2) {
-//						// TODO Auto-generated catch block
-//						e2.printStackTrace();
-//					} catch (IOException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-					
-			        //textTalbai.setText(line.toString());
-					//System.out.println(openNew.getSelectedFile().getName());
 				}
 			}
 		});
 		mnFile.add(mntmNeeh);
+		
+		JMenuItem mntmPrint = new JMenuItem("Хэвлэх");
+		mntmPrint.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean hevleh;
+				try {
+					hevleh = textTalbai.print();
+					if (hevleh) {
+						JOptionPane.showMessageDialog(null, "Хэвлэж дууслаа");
+					} else {
+						JOptionPane.showMessageDialog(null, "Хэвлэхэд алдаа гарлаа");
+					}
+				} catch (PrinterException e1) {
+					JOptionPane.showMessageDialog(null, "Алдаа гарлаа");
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		mntmPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
+		mnFile.add(mntmPrint);
 		
 		JSeparator separator_1 = new JSeparator();
 		mnFile.add(separator_1);
@@ -207,10 +217,37 @@ public class NotePad {
 		mntmPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK));
 		mnEdit.add(mntmPaste);
 		
+		JMenu mnTekct = new JMenu("Текст");
+		mnTekct.setFont(new Font("Noto Sans", Font.BOLD, 12));
+		menuBar.add(mnTekct);
+		
+		JMenuItem menuItemBold = new JMenuItem(new StyledEditorKit.BoldAction());
+		menuItemBold.setText("Бүдүүн");
+		menuItemBold.setFont(new Font("Noto Sans", Font.BOLD, 12));
+		menuItemBold.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
+		mnTekct.add(menuItemBold);
+		
+		JMenuItem mntmItalic = new JMenuItem(new StyledEditorKit.ItalicAction());
+		mntmItalic.setText("Ташуу");
+		mntmItalic.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK));
+		mnTekct.add(mntmItalic);
+		
+		JMenuItem mntmUnderline = new JMenuItem(new StyledEditorKit.UnderlineAction());
+		mntmUnderline.setText("Доогуур зураас");
+		mntmUnderline.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
+		mnTekct.add(mntmUnderline);
+		
+		JMenuItem mntmFont = new JMenuItem();
+		mntmFont.setText("Фонт");
+		mnTekct.add(mntmFont);
+		
+		JMenuItem mntmSearch = new JMenuItem("Хайх");
+		mntmSearch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK));
+		mnTekct.add(mntmSearch);
+		
 		JMenu mnHelp = new JMenu("Тусламж");
 		mnHelp.setFont(new Font("Noto Sans", Font.BOLD, 12));
 		menuBar.add(mnHelp);
 		frmHe.getContentPane().setLayout(new CardLayout(0, 0));
-		
 	}
 }
